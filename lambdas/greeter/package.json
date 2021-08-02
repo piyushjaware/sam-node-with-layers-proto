@@ -1,0 +1,11 @@
+{
+  "name": "sam-app",
+  "version": "1.0.0",
+  "description": "Sam app",
+  "main": "app.js",
+  "author": "Piyush Jaware",
+  "license": "MIT",
+  "dependencies": {
+    "node-random-name": "^1.0.1"
+  }
+}

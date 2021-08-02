@@ -1,0 +1,17 @@
+.git
+.aws-sam
+.pytest_cache
+.vscode
+venv
+*.log
+*.md
+template*export.yml
+*.jpg
+
+Dockerfile
+.gitignore
+Makefile
+template*.yml
+deploy
+layers/lib/nodejs/node_modules
+lambdas/greeter/node_modules

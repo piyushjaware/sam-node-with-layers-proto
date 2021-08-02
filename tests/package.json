@@ -1,0 +1,27 @@
+{
+  "name": "events",
+  "version": "1.0.0",
+  "description": "Events is an event-driven system that handles Nitro Events",
+  "directories": {
+    "tests": "tests"
+  },
+  "scripts": {
+    "test": "mocha --recursive tests/unit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org:bunchball/events.git"
+  },
+  "author": "Bunchball",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/bunchball/events/src/master/Readme.md",
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0",
+    "sinon": "^7.2.3",
+    "unit.js": "^2.0.0"
+  },
+  "dependencies": {
+    "mock-require": "^3.0.3"
+  }
+}

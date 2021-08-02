@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'A prototype sam node app
+
+  '
+Parameters:
+  EnvCode:
+    Type: String
+    Default: dev
+    AllowedValues:
+    - dev
+    - prod
+    Description: Enter environment dev or prod
+  StackPrefix:
+    Type: String
+    Default: sam-node-proto
+    Description: Enter the stack prefix
+Globals:
+  Function:
+    Timeout: 60
+Resources:
+  GreeterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Join:
+        - '-'
+        - - Ref: StackPrefix
+          - GreeterFunction
+          - Ref: EnvCode
+      Description: Returns a greeting message
+      CodeUri: s3://bunchball-code-qa/sam-test/9580e821de9421e660ea0c981abe678e
+      Handler: app.handler
+      Role:
+        Fn::GetAtt:
+        - LambdaRole
+        - Arn
+      Layers:
+      - Ref: LibLayer
+      - Ref: CodeLayer
+      Runtime: nodejs12.x
+  LibLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: lib
+      Description: "common libraries (used by the code layer or \u03BBs)"
+      ContentUri: s3://bunchball-code-qa/sam-test/d2c515e461787efd7f9419c8a0d4284d
+      CompatibleRuntimes:
+      - nodejs12.x
+  CodeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: code
+      Description: "common code that \u03BBs can share"
+      ContentUri: s3://bunchball-code-qa/sam-test/0fedb1c2de458353f5b7cf952723dbdc
+      CompatibleRuntimes:
+      - nodejs12.x
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: lambdaPolicy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
