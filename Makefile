@@ -1,16 +1,17 @@
-.PHONY: test invoke
+.PHONY: validate install-deps install-lib-layer-deps build run-greeter build-tests inspect-files test deploy-dev
 
 
 NODE=node:12
 STACK := --stack-name sam-node-proto
-BUCKET_PREFIX := --s3-prefix sam-test
-PKG_TPL_OPTS := --template-file template.yml --output-template-file template-export.yml
+S3_PREFIX := --s3-prefix sam-test
+PKG_TEMPLATE_OPTS := --template-file template.yml --output-template-file template-export.yml
 DEPLOY_CAPS := --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
 IMAGE:= sam-node-proto
 
-REGION := --region us-west-2 # secret
-ENG_PROFILE := --profile eng # secret
-ENG_S3_BUCKET := --s3-bucket bunchball-code-qa # secret
+# Dev Environment values to use. Similarly add for other envs.
+DEV_REGION := --DEV_REGION <aws DEV_REGION>
+DEV_PROFILE := --profile <aws profile to use> 
+DEV_S3_BUCKET := --s3-bucket <s3 bucket to upload code to>
 DEV_TAGS := --tags Environment=dev Project=sam-node-proto
 
 
@@ -45,5 +46,5 @@ test: build-tests
 	--entrypoint="node" ${IMAGE}:latest node_modules/.bin/nyc node_modules/.bin/_mocha tests/unit/**/*.js --colors
 	
 deploy-dev: validate install-deps test
-	sam package ${PKG_TPL_OPTS} ${ENG_S3_BUCKET} ${BUCKET_PREFIX} $(ENG_PROFILE) $(REGION)
-	sam deploy --template-file template-export.yml --parameter-overrides $(shell cat deploy/parameters.dev.properties) ${STACK}-dev $(DEPLOY_CAPS) $(ENG_PROFILE) $(REGION) ${DEV_TAGS}
+	sam package ${PKG_TEMPLATE_OPTS} ${DEV_S3_BUCKET} ${S3_PREFIX} $(DEV_PROFILE) $(DEV_REGION)
+	sam deploy --template-file template-export.yml --parameter-overrides $(shell cat deploy/parameters.dev.properties) ${STACK}-dev $(DEPLOY_CAPS) $(DEV_PROFILE) $(DEV_REGION) ${DEV_TAGS}
