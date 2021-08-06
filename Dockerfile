@@ -1,3 +1,7 @@
+# -------------------------------------------- #
+# Only used for Testing!
+# -------------------------------------------- #
+
 FROM node:12.18.1
 ENV NODE_ENV=test
 
@@ -13,9 +17,9 @@ COPY lambdas/greeter/package.json ./lambdas/greeter/package.json
 RUN find . ! -path "*/node_modules/*" -name "package.json" -execdir npm install \;
 
 # Put all dependencies at the base path, just as sam makes them avaiable while running lambda
-RUN cp -a ./tests/node_modules/. ./node_modules/
-RUN cp -a ./layers/lib/nodejs/node_modules/. ./node_modules/
-RUN cp -a ./lambdas/greeter/node_modules/. ./node_modules/
+RUN if [ -d ./tests/node_modules ]; then cp -a ./tests/node_modules/. ./node_modules/  ; fi
+RUN if [ -d ./layers/lib/nodejs/node_modules ]; then cp -a ./layers/lib/nodejs/node_modules/. ./node_modules/  ; fi
+RUN if [ -d ./lambdas/greeter/node_modules ]; then cp -a ./lambdas/greeter/node_modules/. ./node_modules/  ; fi
 
 COPY . .
 

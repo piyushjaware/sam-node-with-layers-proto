@@ -130,6 +130,9 @@ $RECYCLE.BIN/
 
 .nyc_output 
 
+.aws-sam
+
+template-export.yml
 lambdas/greeter/node_modules
 layers/lib/nodejs/node_modules
-
+tests/node_modules

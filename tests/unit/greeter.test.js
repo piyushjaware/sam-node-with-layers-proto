@@ -8,12 +8,12 @@ let test = require('unit.js'),
     context = { awsRequestId: 'a123' };
 
 let assert = test.assert;
-let axiosSpy;
+let axiosStub;
 
 describe('Greeter Lambda Function', function () {
 
     it('should return a greeting message', async function () {
-        axiosSpy = stubAxios(200, {
+        axiosStub = stubAxios(200, {
             "args": {
                 "name": "Kuhu"
             },
@@ -21,12 +21,14 @@ describe('Greeter Lambda Function', function () {
             "url": "https://postman-echo.com/get?name=kuhu"
         });
         let res = await lambda.handler(event, context);
+        const axiosCallArgs = axiosStub.getCalls()[0].args;
+        assert.equal(axiosCallArgs[0].includes("https://httpbin.org/get?name="), true);
         assert.equal(res.statusCode, 200);
         assert.equal(JSON.parse(res.body).message, 'Hi from Kuhu');
     });
 
     afterEach(function () {
-        axiosSpy ? axiosSpy.restore() : '';
+        axiosStub ? axiosStub.restore() : '';
     });
 
 });
